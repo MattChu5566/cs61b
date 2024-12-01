@@ -78,10 +78,10 @@ public class PercolationPicture {
         if (ar == null) {
             throw new RuntimeException("could not find inputFiles");
         }
-        return "inputFiles/" + ar[StdRandom.uniform(ar.length)].getName();
+        return "/hw2/inputFiles/" + ar[StdRandom.uniform(ar.length)].getName();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) { //run/addConfiguration "args": "hw2/inputFiles/greeting57.txt"
         String filename;
         if (args.length == 1) {
             filename = args[0];
