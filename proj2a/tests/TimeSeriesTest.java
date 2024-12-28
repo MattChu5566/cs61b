@@ -40,6 +40,36 @@ public class TimeSeriesTest {
         for (int i = 0; i < expectedTotal.size(); i += 1) {
             assertThat(totalPopulation.data().get(i)).isWithin(1E-10).of(expectedTotal.get(i));
         }
+
+        // divide
+        TimeSeries piano = new TimeSeries();
+        piano.put(2024, 1000.0);
+        piano.put(2023, 2000.0);
+        TimeSeries violin = new TimeSeries();
+        violin.put(2024, 500.0);
+        violin.put(2023, 200.0);
+        violin.put(2022, 100.0);
+
+        TimeSeries result = piano.dividedBy(violin);
+
+        List<Integer> expectedY = new ArrayList<>
+                (Arrays.asList(2023, 2024));
+
+        assertThat(result.years()).isEqualTo(expectedY);
+
+        List<Double> expectedQ = new ArrayList<>
+                (Arrays.asList(10.0, 2.0));
+
+        for (int i = 0; i < expectedQ.size(); i += 1) {
+            assertThat(result.data().get(i)).isWithin(1E-10).of(expectedQ.get(i));
+        }
+
+        piano.put(2021, 600.0);
+        try {
+            piano.dividedBy(violin);
+        } catch (IllegalArgumentException err) {
+            assertThat(err).hasMessageThat();
+        }
     }
 
     @Test

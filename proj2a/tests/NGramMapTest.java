@@ -73,4 +73,34 @@ public class NGramMapTest {
         assertThat(fishPlusDogWeight.get(1865)).isWithin(1E-10).of(expectedFishPlusDogWeight1865);
     }
 
+    @Test
+    public void testWeightedAllYears() {
+        NGramMap ngm = new NGramMap(SHORT_WORDS_FILE, TOTAL_COUNTS_FILE);
+
+        TimeSeries weighted = ngm.weightHistory("airport");
+
+        assertThat(weighted.get(2007)).isWithin(1E-10).of(175702.0 / 28307904288.0);
+        assertThat(weighted.get(2008)).isWithin(1E-10).of(173294.0 / 28752030034.0);
+    }
+
+    @Test
+    public void testSummedAllYears() {
+        NGramMap ngm = new NGramMap(SHORT_WORDS_FILE, TOTAL_COUNTS_FILE);
+
+        List<String> words = new ArrayList<>();
+        words.add("airport");
+        words.add("request");
+        words.add("wandered");
+        TimeSeries summed = ngm.summedWeightHistory(words);
+        
+        double exp2005 = (646179.0 + 83769.0) / 26609986084.0;
+        assertThat(summed.get(2005)).isWithin(1E-10).of(exp2005);
+        double exp2006 = (677820.0 + 87688.0) / 27695491774.0;
+        assertThat(summed.get(2006)).isWithin(1E-10).of(exp2006);
+        double exp2007 = (175702.0 + 697645.0 + 108634.0) / 28307904288.0;
+        assertThat(summed.get(2007)).isWithin(1E-10).of(exp2007);
+        double exp2008 = (173294.0 + 795265.0 + 171015.0) / 28752030034.0;
+        assertThat(summed.get(2008)).isWithin(1E-10).of(exp2008);
+    }
+
 }  
