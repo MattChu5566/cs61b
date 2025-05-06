@@ -50,7 +50,9 @@ public class RedBlackTree<T extends Comparable<T>> {
      * @param node
      */
     void flipColors(RBTreeNode<T> node) {
-        // TODO: YOUR CODE HERE
+        node.left.isBlack = true;
+        node.right.isBlack = true;
+        node.isBlack = false;
     }
 
     /**
@@ -61,8 +63,21 @@ public class RedBlackTree<T extends Comparable<T>> {
      * @return
      */
     RBTreeNode<T> rotateRight(RBTreeNode<T> node) {
-        // TODO: YOUR CODE HERE
-        return null;
+        RBTreeNode<T> parent = findParent(node);
+        RBTreeNode<T> newRootNodeSub = node.left;
+        node.left = newRootNodeSub.right;
+        newRootNodeSub.right = node;
+        boolean nodeIsBlack = node.isBlack;
+        node.isBlack = newRootNodeSub.isBlack;
+        newRootNodeSub.isBlack = nodeIsBlack;
+        if (parent == null) {
+            root = newRootNodeSub;
+        } else if (parent.left == node) {
+            parent.left = newRootNodeSub;
+        } else {
+            parent.right = newRootNodeSub;
+        }
+        return newRootNodeSub;
     }
 
     /**
@@ -73,8 +88,21 @@ public class RedBlackTree<T extends Comparable<T>> {
      * @return
      */
     RBTreeNode<T> rotateLeft(RBTreeNode<T> node) {
-        // TODO: YOUR CODE HERE
-        return null;
+        RBTreeNode<T> parent = findParent(node);
+        RBTreeNode<T> newRootNodeSub = node.right;
+        node.right = newRootNodeSub.left;
+        newRootNodeSub.left = node;
+        boolean nodeIsBlack = node.isBlack;
+        node.isBlack = newRootNodeSub.isBlack;
+        newRootNodeSub.isBlack = nodeIsBlack;
+        if (parent == null) {
+            root = newRootNodeSub;
+        } else if (parent.left == node) {
+            parent.left = newRootNodeSub;
+        } else {
+            parent.right = newRootNodeSub;
+        }
+        return newRootNodeSub;
     }
 
     /**
@@ -96,6 +124,27 @@ public class RedBlackTree<T extends Comparable<T>> {
         root.isBlack = true;
     }
 
+    private RBTreeNode<T> findParent(RBTreeNode<T> node, RBTreeNode<T> now) {
+        if (node.item.compareTo(now.item) < 0) {
+            if (now.left == node || now.left == null) {
+                return now;
+            } else {
+                return findParent(node, now.left);
+            }
+        } else {
+            if (now.right == node || now.right == null) {
+                return now;
+            } else {
+                return findParent(node, now.right);
+            }
+        }
+    }
+
+    private RBTreeNode<T> findParent(RBTreeNode<T> node) {
+        if (root == null || (root == node)) return null;
+        return findParent(node, root);
+    }
+
     /**
      * Inserts the given node into this Red Black Tree. Comments have been provided to help break
      * down the problem. For each case, consider the scenario needed to perform those operations.
@@ -106,16 +155,39 @@ public class RedBlackTree<T extends Comparable<T>> {
      */
     private RBTreeNode<T> insert(RBTreeNode<T> node, T item) {
         // TODO: Insert (return) new red leaf node.
+        RBTreeNode<T> newNode = new RBTreeNode<T>(false, item);
 
         // TODO: Handle normal binary search tree insertion.
+        RBTreeNode<T> parentNode = findParent(newNode);
+        if (parentNode == null) {
+            root = newNode;
+        } else if (item.compareTo(parentNode.item) < 0) {
+            parentNode.left = newNode;
+        } else {
+            parentNode.right = newNode;
+        }
 
-        // TODO: Rotate left operation
+        RBTreeNode<T> subRoot = parentNode;
+        while (subRoot != null) {
+            // TODO: Rotate left operation
+            if (isRed(subRoot.right) && !isRed(subRoot.left)) {
+                subRoot = rotateLeft(subRoot);
+            }
 
-        // TODO: Rotate right operation
+            // TODO: Rotate right operation
+            if (isRed(subRoot) && isRed(subRoot.left)) {
+                subRoot = rotateRight(findParent(subRoot));
+            }
 
-        // TODO: Color flip
+            // TODO: Color flip
+            if (subRoot.left != null && subRoot.right != null && isRed(subRoot.left) && isRed(subRoot.right)) {
+                flipColors(subRoot);
+                subRoot = findParent(subRoot);
+            } else {
+                subRoot = null;
+            }
+        }
 
-        return null; //fix this return statement
+        return root; //fix this return statement
     }
-
 }
