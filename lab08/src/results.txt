@@ -1,0 +1,93 @@
+1. InsertRandomSpeedTest - string length 10
+
+10000
+ULL - 0.27s
+My - 0.02s
+Java - 0.00s
+20000
+ULL - 1.01s
+My - 0.02s
+Java - 0.03s
+30000
+ULL - 2.29s
+My - 0.02s
+Java - 0.01s
+40000
+ULL - stack overflow
+My - 0.06s
+Java - 0.02s
+
+ULL - grows with O(N^2)
+HashMap - almost constant time at this scale 
+
+
+1000000
+My - 0.81s
+Java - 0.33s
+5000000
+My - 4.40s
+Java - 2.05s
+10000000
+My - 10.74s
+Java - 3.96s
+20000000
+My - java.lang.OutOfMemoryError
+Java - 9.21s
+
+resize dominants at this scale. 
+seems linear as resize iterates all of the items.
+
+
+
+2. InsertInOrderSpeedTest - string length 10
+
+10000
+ULL - 0.75s
+My - 0.04s
+Java - 0.00s
+20000
+ULL - 2.04s
+My - 0.02s
+Java - 0.01s
+30000
+ULL - 9.65s
+My - 0.03s
+Java - 0.02s
+
+1000000
+My - 0.50s
+Java - 0.32s
+5000000
+My - 2.74s
+Java - 1.35s
+10000000
+My - 5.80s
+Java - 2.70s
+
+At higher order, insert in order is faster, since buckets are inserted more evenly, and less bucket items increases the iteration speed.
+
+hashMap is fast in insert, get. Though it doesn't support getting information relative to an item, e.g. item.next().
+
+
+
+3. BucketsSpeedTest - string length 10
+1000000
+ArrayList - 1.15s
+LinkedList - 1.05s
+HashSet - 1.42s
+Stack - 1.11s
+ArrayDeque - 1.05s
+5000000
+ArrayList - 5.82s
+LinkedList - 5.72s
+HashSet - 7.89s
+Stack - 6.77s
+ArrayDeque - 6.68s
+10000000
+ArrayList - 11.35s
+LinkedList - 14.34s
+HashSet - 23.19s
+Stack - 15.72s
+ArrayDeque - 18.03s
+
+hashSet is the slowest and time scales faster than others, for redundant hashing operations.
